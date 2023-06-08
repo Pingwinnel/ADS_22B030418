@@ -1,0 +1,9 @@
+{
+    "cmake.configureOnOpen": true,
+    "terminal.explorerKind": "external",
+    "files.associations": {
+        "clocale": "cpp",
+        "random": "cpp",
+        "iostream": "cpp"
+    }
+}
