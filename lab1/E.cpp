@@ -2,6 +2,8 @@
 #include <queue>
 
 using namespace std;
+
+//run id :6975
 int main(){
     queue <int> Borya;
     queue <int> Nurs;

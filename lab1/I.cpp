@@ -2,6 +2,7 @@
 #include <stack>
 #include <algorithm>
 using namespace std;
+//run id :6988
 int main(){
     int num; cin >> num;
     string sum; cin >> sum;

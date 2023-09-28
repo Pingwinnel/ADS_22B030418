@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+//run id :1207
 int main(){
     string g,h,gf,hf;
     int remove_num;
