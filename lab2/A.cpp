@@ -1,58 +1,25 @@
 #include <iostream>
-#include <queue>
+#include <vector>
+
 using namespace std;
 
-
-
 int main(){
-    queue<int> que; 
-
-    int num;
-    cin >> num;
-    
-    int arrnum[num];
-    for(int i=0;i<num;i++){
-        cin >> arrnum[i];
+    int n,a,k;
+    cin>>n;
+    vector<int> vec;
+    for(int i=0;i<n;i++){
+        cin>>a;
+        vec.push_back(a);
     }
-    
-    for(int j=0;j<num;j++){
-        int n;
-        n=arrnum[j];
-        if(n==1){
-            cout <<'1';
-            cout << endl;
-            continue;
+    cin>>k;
+    int max=INT32_MAX;
+    for(int i=0;i<vec.size();i++)
+    {
+        if(abs(k-vec[i])<max)
+        {
+            max=abs(k-vec[i]);
+            n=i;
         }
-        int k=n;
-        while(n>1){
-            if(k==n){
-                que.push(n);
-            }
-            
-                for(int i=1;i<n;i++){
-                    if(i==1){
-                        que.push(n-1);
-                    }
-                    int u = que.front();
-                    que.pop();
-                    que.push(u);
-                    
-                }
-            
-            n--;
-        }
-        int app[que.size()];
-        int count=que.size();
-        int u=count;
-            while(!que.empty()){
-                app[count]=que.front();
-                que.pop();
-                count--;
-
-            } 
-            for(int i=1;i<=u;i++){
-                cout << app[i] << " ";
-            }
-            cout << endl;
-            }
+    }
+    cout<<n;
 }
