@@ -2,7 +2,7 @@
 #include <vector>
 
 using namespace std;
-
+//run id :1814
 int main(){
     int n,a,k;
     cin>>n;
