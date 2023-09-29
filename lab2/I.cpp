@@ -1,294 +1,142 @@
 #include <iostream>
-#include <vector>
+  
 using namespace std;
 
-template<typename T>
-class LinkedList
-{
-public:
-    LinkedList(/* args */);
-    ~LinkedList();
-        
-    void push_back(T data);
-    void push_front(T data);
-    int getSize() {return Size;};
-    T& operator[](const int index);
-    void pop_front();
-    void pop_back();
-    void insert(T data,int index);
-    void removeAt(int index);
-    void clear();
-    void rotate(int steps);
-    void printlist();
-    void rotateprintlist();
-    void pushbackDatabase(int n);
-    void push_backList(int n);
-    void printFront();
-    void printBack();
-
-private:
-    template<typename T1>
-    class Node
-    {
-        public:
-            Node *pNext;
-            T data;
-            Node(T data=T1(), Node *pNext=nullptr)
-            {
-                this->data=data;
-                this->pNext=pNext;
-            };
-    };
-
-    int Size;
-    Node<T> *head,*tail;
-        
-
+//run id:5127
+struct Node{
+	Node * prev;
+	Node * next;
+	string val;
+	Node(string _val){
+		prev = NULL;
+		next = NULL;
+		val = _val;
+	}	
 };
-        
-    
-    
-template<typename T> 
-LinkedList<T>::LinkedList()
-{
-    Size=0;
-    head=nullptr;
-    tail=head;
-}
 
-template<typename T> 
-LinkedList<T>::~LinkedList()
-{
-clear();
-}
-
-template<typename T>
-void LinkedList<T>::clear()
-{
-while (Size)
-{
-    pop_front();
-}
-
-}
-
-template<typename T> 
-void LinkedList<T>::push_backList(int n)
-{
-    Node<T> *tail;
-for (int i = 1; i <= n; ++i) {
-    T x;
-    cin >> x;
-    Node<T> *cur = new Node<T>();
-    cur -> data = x;
- 
-    if (i == 1) {
-      head = tail = cur;
-    } else {
-      tail -> pNext = cur;
-      tail = cur;
-    }    
-
-
-}
-}
-
-template<typename T> 
-void LinkedList<T>::push_back(T data)
-{
-    if(head==nullptr)
-    {
-        head=new Node<T>(data);
-        tail=head;
+Node * head = NULL;
+Node * tail = NULL;
+int cnt;
+void add_back(string s){
+    Node *newnode = new Node(s);
+    if (tail == NULL || head == NULL) {
+        tail = newnode;
+        head = tail;
     }
+    else {
+        tail->next = newnode;
+        newnode->prev = tail;
+        tail = tail->next;
+    }
+}
+void push_front(string s){
+    Node *newnode = new Node(s);
+    newnode->next = head;
+    if (head != NULL)
+        head->prev = newnode;
     else
-    {
-        Node<T> *curr=this->head;
-        while(curr->pNext!=nullptr)
-        {
-            curr=curr->pNext;
-        }
-        curr->pNext=new Node<T>(data);
-        tail=curr->pNext;
+        tail = newnode;
+    head = newnode;
+}
+bool empty(){
+    if (head == NULL)
+        return true;
+    return false;
+}
+void erase_front(){
+    Node *tmp = head;
+    head = head->next;
+    if (head != NULL)
+        head->prev = NULL;
+    if (head == NULL) {
+        tail = NULL;
     }
-    Size++;
+    delete tmp;
 }
-
-template<typename T>
-void LinkedList<T> ::push_front(T data)
-{
-head=new Node<T>(data,head);
-tail=tail->pNext;
-Size++;
-}
-
-template<typename T> 
-T& LinkedList<T>::operator[](const int index)
-{
-int counter=0;
-Node<T> *curr=this->head;
-while(curr!=nullptr)
-{
-    if(counter==index) return curr->data;
-    curr=curr->pNext;
-    counter++;
-}
-}
-template<typename T>
-void LinkedList<T> ::pop_front()
-{
-Node<T> *temp=head;
-head=head->pNext;
-cout<<temp->data<<endl;
-delete temp;
-Size--;
-}
-
-
-template<typename T>
-void LinkedList<T>::insert(T data,int index)
-{
-    if(index==0) push_front(data);
-    else
-    {
-        Node<T> *prev=this->head;
-        for(int i=0;i<index-1;i++){
-            prev=prev->pNext;
-        }
-        prev->pNext=new Node<T>(data,prev->pNext);
-        
+void erase_back(){
+    Node *tmp = tail;
+    if (tail->prev != NULL) {
+        tail = tail->prev;
     }
-    Size++;
-}
-
-template<typename T>
-void LinkedList<T>::removeAt(int index)
-{
-    if(index==0) pop_front();
-    else
-    {
-        Node<T> *prev=this->head;
-        for(int i=0;i<index-1;i++){
-            prev=prev->pNext;
-        }
-        Node<T> *toDElete=prev->pNext;
-        prev->pNext=toDElete->pNext;
-        delete toDElete;
+    else {
+        head = NULL;
     }
-    Size--;
+    tail->next = NULL;
+    delete tmp;
 }
-
-template<typename T>
-void LinkedList<T> ::pop_back()
-{
-    cout<<tail->data<<endl;
-    removeAt(Size-1);
-    Size--;
+string front(){
+    return head->val;
 }
-
-template<typename T>
-void LinkedList<T> ::rotate(int steps)
-{
-    Node<T> *p=head;
-    Node<T> *q=head;
-    Node<T> *prev=nullptr;
-    int count=0;
-    while(p and count<steps)
-    {
-        prev=p;
-        p=p->pNext;
-        q=q->pNext;
-        count++;
-    }
-    p=prev;
-    while(q)
-    {
-        prev=q;
-        q=q->pNext;
-    }
-    q=prev;
-    q->pNext=head;
-    head=p->pNext;
-    p->pNext=nullptr;
+string back(){
+    return tail->val;
 }
-
-template<typename T>
-void LinkedList<T>::printlist()
-{
-    Node<T> *curr=head;
-while(curr!=nullptr)
-        {
-            cout<<curr->data<<" ";
-            curr=curr->pNext;
-        }
-        
-}
-
-template<typename T>
-void LinkedList<T>::pushbackDatabase(int n)
-{
-    string prev="";
-    for (int i = 1; i <= n; ++i) {
-        T x;
-        cin >> x;
-        if(x!=prev){
-        push_front(x);
-        prev=x;
+void clear(){
+    while(head != NULL) {
+        Node *tmp = head;
+        head = head->next;
+        delete tmp;
     }
 }
-}
-
-template<typename T>
-void LinkedList<T>::printFront(){
-cout<<head->data<<endl;
-}
-
-template<typename T>
-void LinkedList<T>::printBack(){
-    Node<T> *curr=head;
-while(curr!=nullptr){
-curr=curr->pNext;
-}
-cout<<curr->data<<endl;
-}
-
-
-
-int main(){
-    LinkedList<string> nums;
-    string n;
-    cin>>n;
-    while(true){
-        if(n=="add_front"){
-            string a;
-            cin>>a;
-            nums.push_front(a);
-            cout<<"ok"<<endl;
-        }
-        else if(n=="add_back"){
-            string a;
-            cin>>a;
-            nums.push_back(a);
-            cout<<"ok"<<endl;
-        }
-        else if(n=="erase_front"){
-            nums.pop_front();
-        }
-        else if(n=="erase_back"){
-            nums.pop_back();
-        }
-        else if(n=="clear"){
-            nums.clear();
-        }
-        else if(n=="front"){
-            nums.printFront();
-        }
-        else if(n=="back"){
-            nums.printBack();
-        }
-        else if(n=="exit"){
-            break;
-        }
-    }
+  
+int main()
+{
+	string s;
+   	while(cin >> s){
+   		if(s == "add_front"){
+   			string str;
+   			cin >> str;
+   			push_front(str);
+   			cout << "ok" << endl;
+   		}
+   		if(s == "add_back"){
+   			string str;
+   			cin >> str;
+   			add_back(str);
+   			cout << "ok" << endl;
+   		}
+   		if(s == "erase_front"){
+   			if(empty()){
+   				cout << "error" << endl;
+   			}
+   			else
+   			{
+   				cout << front() << endl;
+   				erase_front();
+   			}
+   		}
+   		if(s == "erase_back"){
+   			if(empty()){
+   				cout << "error" << endl;
+   			}
+   			else{
+   				cout << back() << endl;
+   				erase_back();
+   			}
+   		}
+   		if(s == "front"){
+   			if(empty()){
+   				cout << "error" << endl;
+   			}
+   			else{
+   				cout << front() << endl;
+   			}
+   		}
+   		if(s == "back"){
+   			if(empty()){
+   				cout << "error" << endl;
+   			}
+   			else{
+   				cout << back() << endl;
+   			}
+   		}
+   		if(s == "clear"){
+   			clear();
+   			cout << "ok" << endl;
+   		}
+   		if(s == "exit"){
+   			cout << "goodbye" << endl;
+   			break;
+   		}
+   	}
     return 0;
 }

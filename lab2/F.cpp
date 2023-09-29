@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-//run id :3030
+
 template<typename T>
 class LinkedList
 {

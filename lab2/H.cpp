@@ -1,302 +1,172 @@
 #include <iostream>
-#include <math.h>
-using namespace std;
-
-template<typename T>
-class LinkedList
-{
-public:
-    LinkedList(/* args */);
-    ~LinkedList();
-        
-    void push_back(int n);
-    void push_front(T data);
-    int getSize() {return Size;};
-    T& operator[](const int index);
-    void pop_front();
-    void pop_back();
-    void insert(T data,int index);
-    void removeAt(int index);
-    void clear();
-    void rotate(int steps);
-    void printlist();
-    void rotateprintlist();
-    void pushbackDatabase(int n);
-    void rotateRange(int steps,int index);
-    void shift_left(int steps);
-    void shift_right(int steps);
-private:
-    template<typename T1>
-    class Node
-    {
-        public:
-            Node *pNext;
-            T data;
-            Node(T data=T1(), Node *pNext=nullptr)
-            {
-                this->data=data;
-                this->pNext=pNext;
-            };
-    };
-
-    int Size;
-    Node<T> *head;
-        
-
-};
-        
-    
-    
-template<typename T> 
-LinkedList<T>::LinkedList()
-{
-    Size=0;
-    head=nullptr;
-}
-
-template<typename T> 
-LinkedList<T>::~LinkedList()
-{
-clear();
-}
-
-template<typename T>
-void LinkedList<T>::clear()
-{
-while (Size)
-{
-    pop_front();
-}
-
-}
-
-template<typename T> 
-void LinkedList<T>::push_back(int n)
-{
-    Node<T> *tail;
-for (int i = 1; i <= n; ++i) {
-    T x;
-    cin >> x;
-    Node<T> *cur = new Node<T>();
-    cur -> data = x;
+#include <algorithm>
  
-    if (i == 1) {
-      head = tail = cur;
-    } else {
-      tail -> pNext = cur;
-      tail = cur;
-    }    
-
-
-}
-}
-
-template<typename T>
-void LinkedList<T> ::push_front(T data)
-{
-head=new Node<T>(data,head);
-Size++;
-}
-
-template<typename T> 
-T& LinkedList<T>::operator[](const int index)
-{
-int counter=0;
-Node<T> *curr=this->head;
-while(curr!=nullptr)
-{
-    if(counter==index) return curr->data;
-    curr=curr->pNext;
-    counter++;
-}
-}
-template<typename T>
-void LinkedList<T> ::pop_front()
-{
-Node<T> *temp=head;
-head=head->pNext;
-delete temp;
-Size--;
-}
-
-
-template<typename T>
-void LinkedList<T>::insert(T data,int index)
-{
-    if(index==0) push_front(data);
-    else
-    {
-        Node<T> *prev=this->head;
-        for(int i=0;i<index-1;i++){
-            prev=prev->pNext;
+using namespace std;
+ 
+struct Node{
+    int val;
+    Node* next;
+    Node(): val(0), next(nullptr) {}
+    Node(int num): val(num), next(nullptr) {}
+    Node(Node* next): val(0), next(next) {}
+    Node(int num, Node* next): val(num), next(next) {}
+};
+ 
+Node* insert(Node* head, Node* node, int a){
+    Node* cur = head;
+    if (a == 0) {
+        node->next = head;
+        head = node;
+    }
+    else {
+        for(int i = 0; i < a - 1; i++) {
+            cur = cur->next;
         }
-        prev->pNext=new Node<T>(data,prev->pNext);
-        
+        node->next = cur->next;
+        cur->next = node;
     }
-    Size++;
+    return head;
 }
-
-template<typename T>
-void LinkedList<T>::removeAt(int index)
-{
-    if(index==0) pop_front();
-    else
-    {
-        Node<T> *prev=this->head;
-        for(int i=0;i<index-1;i++){
-            prev=prev->pNext;
+ 
+Node* remove(Node* head, int a){
+    Node* cur = head;
+    if (a == 0) {
+        head = head->next;
+    }
+    else {
+        for(int i = 0; i < a - 1; i++) {
+            cur = cur->next;
         }
-        Node<T> *toDElete=prev->pNext;
-        prev->pNext=toDElete->pNext;
-        delete toDElete;
+        Node* tmp = cur->next->next;
+        delete cur->next;
+        cur->next = tmp;
     }
-    Size--;
+    return head;
 }
-
-template<typename T>
-void LinkedList<T> ::pop_back()
-{
-       removeAt(Size-1);
-    Size--;
-}
-
-template<typename T>
-void LinkedList<T> ::rotate(int steps)
-{
-    steps=steps%Size;
-    Node<T> *p=head;
-    Node<T> *q=head;
-    Node<T> *prev=nullptr;
-    int count=0;
-    while(count<steps)
-    {
-        prev=p;
-        p=p->pNext;
-        q=q->pNext;
-        count++;
+ 
+Node* replace(Node* head, int p1, int p2){
+    Node *cur1 = head, *cur2 = head;
+    Node *prev1 = NULL, *prev2 = NULL;
+    int cnt = 0;
+    if (p1 == 0 and p2 == 0) {
+        return head;
     }
-    p=prev;
-    while(q)
-    {
-        prev=q;
-        q=q->pNext;
+    while(cnt < p1) {
+        prev1 = cur1;
+        cur1 = cur1->next;
+        cnt++;
     }
-    q=prev;
-    q->pNext=head;
-    head=p->pNext;
-    p->pNext=nullptr;
-}
-
-template<typename T>
-void LinkedList<T>::printlist()
-{
-    Node<T> *curr=head;
-while(curr!=nullptr)
-        {
-            cout<<curr->data<<" ";
-            curr=curr->pNext;
-        }
-        
-}
-
-template<typename T>
-void LinkedList<T>::pushbackDatabase(int n)
-{
-    string prev="";
-    for (int i = 1; i <= n; ++i) {
-        T x;
-        cin >> x;
-        if(x!=prev){
-        push_front(x);
-        prev=x;
+    if (p1 == 0) {
+        head = head->next;
+        cur2 = head;
     }
-}
-}
-
-template<typename T>
-void LinkedList<T> ::rotateRange(int a,int b)
-{
-    Node<T> *curr=head,*temp1,*temp2;
-    int count=0;
-    T data2,data3;
-     while (curr!= NULL)
-     {
-       if(a == count)
-        {
-            data2=curr->data;
-            temp1=curr;
-            count++;
-        }
-        else if(count==b){
-           data3=curr->data;
-           temp2=curr;
-           count++;
-        }
-      curr = curr->pNext;
+    if (p1 != 0) {
+        prev1->next = cur1->next;
     }
-    temp1->data=data3;
-    temp2->data=data2;
-
-}
-
-
-template<typename T>
-void LinkedList<T> ::shift_left(int steps){
-    Node<T> *curr=head,*tail;
-    tail=this[abs((steps%Size)-Size)];
-    int data1;
-    while(steps%Size){
-        tail->data=data1;
-        tail->data=head->data;
-        tail=tail->pNext;
-        head->data=data1;
-        head=head->pNext;
-
+    cnt = 0;
+    while(cnt < p2) {
+        prev2 = cur2;
+        cur2 = cur2->next;
+        cnt++;
     }
+    if (p2 != 0) {
+        prev2->next = cur1;
+        cur1->next = cur2;
+    }
+    else {
+        cur1->next = cur2;
+    }
+    if (p2 == 0) {
+        head = cur1;
+        return head;
+    }
+    return head;
 }
-
-
-
-
+ 
+Node* reverse(Node* head){
+    Node *prev = NULL, *next = NULL;
+    Node *cur = head;
+    while(cur != NULL) {
+        next = cur->next;
+        cur->next = prev;
+        prev = cur;
+        cur = next;
+    }
+    head = prev;
+    return head;
+}
+ 
+void print(Node* head){
+    Node* cur = head;
+    if (cur == NULL) {
+        cout << -1 << "\n";
+        return;
+    }
+    while(cur != NULL) {
+        cout << cur->val << " ";
+        cur = cur->next;
+    }
+    cout << "\n";
+}
+ 
+Node* cyclic_left(Node* head, int num){
+    Node *cur = head;
+    while(cur->next != NULL) {
+        cur = cur->next;
+    }
+    while(num--) {
+        cur->next = head;
+        head = head->next;
+        cur = cur->next;
+        cur->next = NULL;
+    }
+    return head;
+}
+ 
+Node* cyclic_right(Node* head, int num){
+    Node *cur = head;
+    int cnt = 1;
+    while(cur->next != NULL) {
+        cur = cur->next;
+        cnt++;
+    }
+    cur->next = head;
+    num = cnt - num;
+    while(num--) {
+        cur = cur->next;
+    }
+    head = cur->next;
+    cur->next = NULL;
+    return head;
+}
+ 
 int main(){
-    LinkedList<int> nums;
-    int n;
-    while(true)
+    Node* head = nullptr;
+    while (true)
     {
-    cin>>n;
-    if(n==0){
-        break;
+        int command; cin >> command;
+        if (command == 0){
+            break;
+        }else if(command == 1){
+            int num, a; cin >> num >> a;
+            head = insert(head, new Node(num), a);
+        }else if (command == 2){
+            int a; cin >> a;
+            head = remove(head, a);
+        }else if (command == 3){
+            print(head);
+        }else if (command == 4){
+            int p1, p2; cin >> p1 >> p2;
+            head = replace(head, p1, p2);
+        }else if (command == 5){
+            head = reverse(head);
+        }else if (command == 6){
+            int num; cin >> num;
+            head = cyclic_left(head, num);
+        }else if (command == 7){
+            int num; cin >> num;
+            head = cyclic_right(head, num);
+        }   
     }
-    else if(n==1){
-        int a,index;
-        cin>>a>>index;
-        nums.insert(a,index);
-    }
-    else if(n==2){
-        int index;
-        cin>>index;
-        nums.removeAt(index);
-    }
-    else if(n==3){
-        nums.printlist();
-        cout<<endl;
-    }
-    else if(n==4){
-        int a,b;
-        cin>>a;
-        cin>>b;
-        nums.rotateRange(a,b);
-    }
-    else if(n==5){
-        nums.printlist();
-    }
-    else if(n==6){
-    int a;
-    cin>>a;
-    nums.shift_left(a);
-    }
-    }
-
-
     return 0;
 }
