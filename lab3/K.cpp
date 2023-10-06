@@ -1,28 +1,45 @@
 #include <iostream>
-
+#define ll long long int
 using namespace std;
+//run id:3501
 
-int main(){
-    int count = 0,n,k;
-    cin>>n>>k;
-    int arr[n];
-    for(int i=0;i<n;i++){
-        cin>>arr[i];
-    }
-    for (int i = 0; i < n; i++) {
-        int sum = 0;
-        for (int j = i; j < n; j++) {
- 
-            if (sum + arr[j] >= k) {
-                sum=sum-arr[j];
-                count++;
-            }
-            else {
-                sum=sum+arr[i];
-            }
+bool subarr(ll arr[],ll size,ll search,ll mid){
+    for(ll i=mid;i<size+1;i++){
+        ll y=arr[i];
+        if(i>mid){
+            y-=arr[i-mid];
+        }
+        if(y>=search){
+            return true;
         }
 
-   
+    }
+    return false;
 }
-cout<<count;
+
+
+int main(){
+    ll size,search,sum=0,y,min;
+    cin>>size>>search;
+    ll arr[size];
+    for(ll i=1;i<size+1;i++){
+        cin>>y;
+        sum+=y;
+        arr[i]=sum;
+
+    }
+    ll left=1,right=size;
+    ll mid;
+    while(left<right){
+        mid=(left+right)/2;
+        if(subarr(arr,size,search,mid)){
+            right=mid;
+            min=mid;
+        }else{
+            left=mid+1;
+        }
+    }
+    cout<<min;
+
+    return 0;
 }
