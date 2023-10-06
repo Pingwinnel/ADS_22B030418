@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 using namespace std;
+//run id :6978
 int main(){
     int n;
     cin >> n;
