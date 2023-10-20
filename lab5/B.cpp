@@ -14,13 +14,13 @@ int leftChild(int i){
 int rightChild(int i){
     return ((2 * i) + 1);
 }
-void heapify_up(ll arr[],ll i){
+void heapifyUp(ll arr[],ll i){
     while (i > 1 && arr[parent(i)] < arr[i]) {
         swap(arr[parent(i)], arr[i]);
          i = parent(i);
     }
 }
-void heapifydown(ll arr[],ll i){
+void heapifyDown(ll arr[],ll i){
     int maxIndex = i;
     int l = leftChild(i);
     if (l <= heapSize && arr[l] > arr[maxIndex]) {
@@ -32,13 +32,13 @@ void heapifydown(ll arr[],ll i){
     }
     if (i != maxIndex) {
         swap(arr[i], arr[maxIndex]);
-        heapifydown(arr,maxIndex);
+        heapifyDown(arr,maxIndex);
     }
 }
 void heapDelete(ll index){
     swap(arr[heapSize],arr[index]);
     heapSize--;
-    heapifydown(arr,index);
+    heapifyDown(arr,index);
 
 }
 int main() {
@@ -51,7 +51,7 @@ int main() {
         cin>>x;
         heapSize++;
         arr[heapSize]=x;
-        heapify_up(arr,heapSize);
+        heapifyUp(arr,heapSize);
     }
     while(heapSize>1){
         heapDelete(1);

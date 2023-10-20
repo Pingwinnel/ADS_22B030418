@@ -1,34 +1,34 @@
 #include <iostream>
 #define ll long long int
 using namespace std;
-//run id:849
 
+//run id:1375
 ll arr[100000];
 ll heapSize;
 
 int parent(int i){
     return (i / 2);
 }
-int leftCh(int i){
+int leftChild(int i){
     return (2 * i);
 }
-int rightCh(int i){
+int rightChild(int i){
     return ((2 * i) + 1);
 }
 void heapifyUp(ll arr[],ll i){
-    while (i > 1 && arr[parent(i)] > arr[i]) {
+    while (i > 1 && arr[parent(i)] < arr[i]) {
         swap(arr[parent(i)], arr[i]);
          i = parent(i);
     }
 }
 void heapifyDown(ll arr[],ll i){
     int maxIndex = i;
-    int l = leftCh(i);
-    if (l <= heapSize && arr[l] < arr[maxIndex]) {
+    int l = leftChild(i);
+    if (l <= heapSize && arr[l] > arr[maxIndex]) {
         maxIndex = l;
     }
-    int r = rightCh(i);
-    if (r <= heapSize && arr[r] < arr[maxIndex]) {
+    int r = rightChild(i);
+    if (r <= heapSize && arr[r] > arr[maxIndex]) {
         maxIndex = r;
     }
     if (i != maxIndex) {
@@ -56,14 +56,13 @@ int main() {
         heapifyUp(arr,heapSize);
     }
     while(peopleNum!=0){
-     count+=arr[1];
-     arr[1]--;
-     if(arr[1]<arr[2] || arr[1]<arr[3]){
-    heapifyDown(arr,1);
-     }
-    peopleNum--;
-    }
+        count+=arr[1];
+        arr[1]--;
+        if(arr[1]<arr[2] ||arr[1]<arr[3]){
+            heapifyDown(arr,1);
+        }
+        peopleNum--;
+    }  
     cout<<count;
-    cin>>size;
     return 0;
 }
