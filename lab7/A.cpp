@@ -1,7 +1,6 @@
 #include <iostream>
 #define ll long long int
 using namespace std;
-//run id:1956
 char arrVowel[100000];
 char arr1[100000];
 ll heapSizeVowel;
@@ -45,18 +44,18 @@ ll heapDelete(char arr[],ll index,ll heap_size){
 }
 int main() {
     ll size;
-    string vowelStr="aeuio";
+    string vowels="aeuio";
     cin>>size;
-    char m;
+    char x;
     for(ll i=0;i<size;i++){
-        cin>>m;
-        if(vowelStr.find(m)<size){
+        cin>>x;
+        if(vowels.find(x)<size){
             heapSizeVowel++;
-            arrVowel[heapSizeVowel]=m;
+            arrVowel[heapSizeVowel]=x;
             heapifyUp(arrVowel,heapSizeVowel);
         }else{
             heapSizeArr1++;
-            arr1[heapSizeArr1]=m;
+            arr1[heapSizeArr1]=x;
             heapifyUp(arr1,heapSizeArr1);
         }
     }
