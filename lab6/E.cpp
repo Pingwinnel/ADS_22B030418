@@ -3,7 +3,7 @@
 using namespace std;
 //run id:1963
 ll arr[100][100];
-ll row_size,colum_size;
+ll rowSize,columSize;
 
 int parent(int i){
     return (i / 2);
@@ -23,11 +23,11 @@ void heapifyUp(ll i,ll j){
 void heapifyDown(int i,int j){
     ll maxIndex = i;
     ll l = leftChild(i);
-    if (l <= row_size && arr[l][j] > arr[maxIndex][j]) {
+    if (l <= rowSize && arr[l][j] > arr[maxIndex][j]) {
         maxIndex = l;
     }
     ll r = rightChild(i);
-    if (r <= row_size && arr[r][j] > arr[maxIndex][j]) {
+    if (r <= rowSize && arr[r][j] > arr[maxIndex][j]) {
         maxIndex = r;
     }
     if (i != maxIndex) {
@@ -36,25 +36,25 @@ void heapifyDown(int i,int j){
     }
 }
 void heapDel(){
-    for(ll i=1;i<=colum_size;i++){
-        swap(arr[row_size][i],arr[1][i]);
-        arr[row_size][i]=0;
+    for(ll i=1;i<=columSize;i++){
+        swap(arr[rowSize][i],arr[1][i]);
+        arr[rowSize][i]=0;
         heapifyDown(1,i);
     }
-    row_size--;
+    rowSize--;
 }
 
 int main() {
     ll row,colum,x;
     cin>>row>>colum;
     for(ll i=0;i<row;i++){
-        row_size++;
-        colum_size=0;
+        rowSize++;
+        columSize=0;
         for(ll j=0;j<colum;j++){
             cin>>x;
-            colum_size++;
-            arr[row_size][colum_size]=x;
-            heapifyUp(row_size,colum_size);
+            columSize++;
+            arr[rowSize][columSize]=x;
+            heapifyUp(rowSize,columSize);
         }
     }
     for(ll i=1;i<=row;i++){

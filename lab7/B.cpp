@@ -1,73 +1,83 @@
 #include <iostream>
 #define ll long long int
 using namespace std;
-ll arr[100000];
-ll arr2[100000];
-ll heapSize,heapSize2;
+//run id:
+ll arr1[9999999];
+void merge(ll arra[],ll left,ll left_end,ll right_start,ll right){
 
+    int Left_arr[left_end+1-left], Right_arr[right+1-right_start];
 
-int parent(int i){
-    return (i / 2);
-}
-int leftChild(int i){
-    return (2 * i);
-}
-int rightChild(int i){
-    return ((2 * i) + 1);
-}
-void heapify_up(ll arr[],ll i){
-    while (i > 1 && arr[parent(i)] > arr[i]) {
-        swap(arr[parent(i)], arr[i]);
-         i = parent(i);
-    }
-}
-void heapifydown(ll arr[],ll i,ll size){
-    int maxIndex = i;
-    int l = leftChild(i);
-    if (l <= size && arr[l] < arr[maxIndex]) {
-        maxIndex = l;
-    }
-    int r = rightChild(i);
-    if (r <= size && arr[r] < arr[maxIndex]) {
-        maxIndex = r;
-    }
-    if (i != maxIndex) {
-        swap(arr[i], arr[maxIndex]);
-        heapifydown(arr,maxIndex,size);
-    }
-}
-void heap_delete(ll arra[],ll index,ll size){
-    swap(arra[size],arra[index]);
-    size--;
-    heapifydown(arra,index,size);
-}
-int main() {
-    ll size_of_first,size_of_second,x;
-    cin>>size_of_first>>size_of_second;
-    for(ll i=0;i<size_of_first;i++){
-        cin>>x;
-        heapSize++;
-        arr[heapSize]=x;
-        heapify_up(arr,heapSize);
-    }for(ll i=0;i<size_of_second;i++){
-        cin>>x;
-        heapSize2++;
-        arr2[heapSize2]=x;
-        heapify_up(arr2,heapSize2);
-    }
-    while(heapSize!=0 && heapSize2!=0){
-        if(arr[1]==arr2[1]){
-            cout<<arr[1]<<" ";
-            heap_delete(arr,1,heapSize);
-            heap_delete(arr2,1,heapSize2);
-            heapSize2--;
-            heapSize--;
-        }else if(arr[1]>arr2[1]){
-            heap_delete(arr2,1,heapSize2);
-            heapSize2--;
+    for (int i = 0; i < left_end+1-left; i++)
+        Left_arr[i] = arra[left + i];
+    for (int j = 0; j < right+1-right_start; j++)
+        Right_arr[j] = arra[right_start + j];
+    ll i=0,j=0,k=left;
+    while(i<left_end+1-left && j<right+1-right_start){
+        if(Left_arr[i]>Right_arr[j]){
+            arra[k]=Right_arr[j];
+            j++;
         }else{
-            heap_delete(arr,1,heapSize);
-            heapSize--;
+            arra[k]=Left_arr[i];
+            i++;
+        }
+        k++;
+    }
+    while(i<left_end+1-left){
+        arra[k]=Left_arr[i];
+        i++;
+        k++;
+    }
+    while(j<right+1-right_start){
+        arra[k]=Right_arr[j];
+        j++;
+        k++;
+    }
+
+}
+
+void merge_sort(ll arra[] , ll left , ll right){
+
+    if (right == left) {  
+        return;
+    }
+
+    merge_sort(arra , left , left+(right-left)/2 );
+    merge_sort(arra,(left+(right-left)/2)+1,right);
+    merge(arra,left,left+(right-left)/2,(left+(right-left)/2)+1,right);
+}
+
+
+int main() {
+    ll size1,size2;
+    cin>>size1;
+    ll Left_arr[size1];
+
+    for (int i = 0; i < size1; i++){
+        cin>>Left_arr[i];
+    }
+    cin>>size2;
+    ll Right_arr[size2];
+    for (int i = 0; i < size2; i++){
+        cin>>Right_arr[i];
+    }
+    ll i=0,j=0;
+    while(i<size1 && j<size2){
+        if(Left_arr[i]>Right_arr[j]){
+            cout<<Right_arr[j]<<" ";
+            j++;
+        }else{
+            cout<<Left_arr[i]<<" ";
+            i++;
         }
     }
+    while(i<size1){
+        cout<<Left_arr[i]<<" ";
+        i++;
+    }
+    while(j<size2){
+        cout<<Right_arr[j]<<" ";
+        j++;
+    }
+
+    return 0;
 }
