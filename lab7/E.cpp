@@ -1,78 +1,86 @@
 #include <iostream>
-#define ll long long int
+#include <vector>
+#include <algorithm>
+
 using namespace std;
-//run id:
-ll rowSize,columSize,x;
-struct almas{
-    string str="";
-    ll sum=0;
-};
-almas arr1[5000];
-void merge(almas arra[],ll left,ll left_end,ll right_start,ll right){
+//run id:652
+bool compareRows(const vector<int>& row1, const vector<int>& row2) {
+    int sum1 = 0;
+    int sum2 = 0;
+    for (int i = 0; i < row1.size(); i++) {
+        sum1 += row1[i];
+        sum2 += row2[i];
+    }
 
-    almas LeftArr[left_end+1-left], RightArr[right+1-right_start];
-
-    for (int i = 0; i < left_end+1-left; i++)
-        LeftArr[i] = arra[left + i];
-    for (int j = 0; j < right+1-right_start; j++)
-        RightArr[j] = arra[right_start + j];
-    ll i=0,j=0,mergeIndex=left;
-    while(i<left_end+1-left && j<right+1-right_start){
-        if(LeftArr[i].sum==RightArr[j].sum){
-            if(LeftArr[i].str>RightArr[j].str){
-                arra[mergeIndex]=RightArr[j];
-                j++;
-            }else{
-                arra[mergeIndex]=LeftArr[i];
-                i++;
+    if (sum1 == sum2) {
+        for (int i = 0; i < row1.size(); i++) {
+            if (row1[i] < row2[i]) {
+                return true; 
+            } else if (row1[i] > row2[i]) {
+                return false; 
             }
-        }else if(LeftArr[i].sum<RightArr[j].sum){
-            arra[mergeIndex]=RightArr[j];
-            j++;
-        }else{
-            arra[mergeIndex]=LeftArr[i];
+        }
+        return false;
+    } else {
+        return sum1 > sum2; 
+    }
+}
+
+void merge(vector<vector<int>>& arr, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+    vector<vector<int>> L(n1);
+    vector<vector<int>> R(n2);
+    for (int i = 0; i < n1; i++)
+        L[i] = arr[left + i];
+    for (int i = 0; i < n2; i++)
+        R[i] = arr[mid + 1 + i];
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (compareRows(L[i], R[j])) {
+            arr[k] = L[i];
             i++;
+        } else {
+            arr[k] = R[j];
+            j++;
         }
-        mergeIndex++;
+        k++;
     }
-    while(i<left_end+1-left){
-        arra[mergeIndex]=LeftArr[i];
+    while (i < n1) {
+        arr[k] = L[i];
         i++;
-        mergeIndex++;
+        k++;
     }
-    while(j<right+1-right_start){
-        arra[mergeIndex]=RightArr[j];
+    while (j < n2) {
+        arr[k] = R[j];
         j++;
-        mergeIndex++;
+        k++;
     }
-
 }
 
-
-
-void merge_sort(almas arra[],ll left,ll right){
-    if(right==left){
-        return;
+void mergeSort(vector<vector<int>>& arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
     }
-    merge_sort(arra,left,left+(right-left)/2);
-    merge_sort(arra,(left+(right-left)/2)+1,right);
-    merge(arra,left,left+(right-left)/2,(left+(right-left)/2)+1,right);
 }
-
-
 int main() {
-    cin>>rowSize>>columSize;
-    for(ll i=0;i<rowSize;i++){
-        for(ll j=0;j<columSize;j++){
-            cin>>x;
-            arr1[i].str+=to_string(x);
-            arr1[i].str+=" ";
-            arr1[i].sum+=x;
+    int n, m;
+    cin >> n >> m;
+    vector<vector<int>> rows(n, vector<int>(m));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cin >> rows[i][j];
         }
     }
-    merge_sort(arr1,0,rowSize);
-    for(ll i=0;i<rowSize;i++){
-        cout<<arr1[i].str;
-        cout<<endl;
+    mergeSort(rows, 0, n - 1);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cout << rows[i][j] << " ";
+        }
+        cout <<endl;
     }
+    return 0;
 }
