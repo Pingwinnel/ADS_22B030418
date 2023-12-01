@@ -1,38 +1,44 @@
 #include <iostream>
+#include <vector>
+#include <queue>
 #include <unordered_map>
-
 #define ll long long int
 using namespace std;
-//run id:5054
-
-const ll P=29;
-
-size_t Hash(string str){
-
-    size_t hashCode=0;
-
-    for(ll i=0;i<str.size();i++){
-        hashCode=(hashCode*P+(str[i]));
-    }
-
-    return hashCode;
-
-}
-
+//run id:3084
+ll inf=(int) 1e9;
+ll was[9999999];
 
 int main(){
-    unordered_map<size_t,int> permutation;
-    string str;
-    size_t hashSearching;
-    cin>>str;
-    for (int i = 0; i < str.size(); ++i) {
-        size_t hashVal = 0;
-        ll pow = 1;
-        for (int j = i; j < str.size(); ++j) {
-            hashVal = (hashVal + (str[j] - 'a' + 1) * pow);
-            pow = (pow * P);
-            permutation[hashVal]=1;
-        }
+    ll verSize,edgeSize,ver1,ver2; 
+    unordered_map<ll,vector<ll>> edList;  
+    cin>>verSize>>edgeSize;
+    for(ll i=0;i<edgeSize;i++){
+        cin>>ver1>>ver2;
+        edList[ver1].push_back(ver2);
+        edList[ver2].push_back(ver1);
     }
-    cout<<permutation.size();
-} 
+    ll head,tail;
+    queue<ll> que;
+    cin>>head>>tail;
+    que.push(head);
+    was[head]=1;
+
+    while(!que.empty()) {
+
+        for(auto i:edList[que.front()]) {
+            if(was[i]==0){
+                que.push(i);
+                was[i]=1;
+            }
+        }
+        que.pop();
+    }
+    if(was[tail]==1) cout<<"YES";
+    else cout<<"NO";
+    
+
+
+
+    return 0;
+
+}

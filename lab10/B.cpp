@@ -1,49 +1,60 @@
-#include <iostream>
-#include <cmath>
-#define ll long long int
+#include <bits/stdc++.h>
 using namespace std;
-//run id: 5000
+#define ll long long int
+ll inf=(int) 1e9+7;
+//run id:2807
 
-const int q =  1e9 + 7;
-const ll P=31;
-
-size_t Hash(string str){
-
-    size_t hashInt=0;
-
-    for(ll i=0;i<str.size();i++){
-        hashInt=(hashInt*P+(str[i]));
+struct Graph {
+    ll VERTI=0;
+    vector<list<ll>> adj;
+    Graph(ll V){
+        this->VERTI = V;
+        adj.resize(V+1);
     }
+    void addEdge(ll v,ll w){
+        adj[v].push_back(w);
 
-    return hashInt;
+    }
+    void BFS(ll s,ll d){
+        vector<bool> visited;
+        visited.resize(VERTI+1,false);
+        list<ll> queue;
+        ll arr[VERTI+1];
+        for(ll i=1;i<=VERTI;i++){
+            arr[i]=inf;
+        }
+        arr[s]=0;
+        visited[s] = true;
+        queue.push_back(s);
+        while (!queue.empty()){
+            for(ll i:adj[queue.front()]){
+                if(!visited[i]){
+                    queue.push_back(i);
+                    visited[i]=true;
+                    if(arr[queue.front()]+1<arr[i]) arr[i]=arr[queue.front()]+1;
+                }
+            }
+            queue.pop_front();
+        }
+        if(visited[d]==true){
+            cout<<arr[d];
+        }else cout<<-1;
+    }
+};
 
-}
 int main(){
-    ll counter=0 ;
-    size_t hashStr2 , hashpara , hashStr1 ;
-    string str1 , str2 , parasite;
-
-    cin >> str1 >> str2 >> parasite;
-
-    hashpara = Hash(parasite);
-    hashStr1 = Hash(str1.substr(0,parasite.size()));
-    hashStr2 = Hash(str2.substr(0,parasite.size()));
-
-    ll pw = 1;
-    for(ll i = 1; i < parasite.size(); i ++) {
-        pw *= P;
+    ll size,value;
+    cin>>size;
+    Graph graph(size);
+    for(ll i=1;i<=size;i++){
+        for(ll j=1;j<=size;j++){
+            cin>>value;
+            if(value==1)  graph.addEdge(i,j);
+        }
     }
-
-    for(ll i=0;i<=min(str1.size(),str2.size())-parasite.size();i++){
-
-
-        if(hashStr1 == hashpara and hashStr2 == hashpara) counter++;
-
-        hashStr1 = ((hashStr1 - (str1[i]) * pw ) * P + (str1[i+parasite.size()])) ;
-        hashStr2 = ((hashStr2 - (str2[i]) * pw ) * P + (str2[i+parasite.size()] ));
-    }
-
-    cout << counter;
+    ll vertice1,vertice2;
+    cin>>vertice1>>vertice2;
+    graph.BFS(vertice1,vertice2);
 
     return 0;
 }

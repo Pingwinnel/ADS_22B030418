@@ -1,51 +1,93 @@
-#include <iostream>
-#include <cmath>
-#include <vector>
-
-#define ll long long int
+#include <bits/stdc++.h>
 
 using namespace std;
-//run id:5073
-const int q = 1e9 + 7;
-const ll P = 29;
+//run id:3086
 
-ll Hash(const string& str, int start, int end) {
-    ll hashCode = 0;
-    for (int i = start; i <= end; i++) {
-        hashCode = (hashCode * P + (str[i] - 'a' + 1)) % q;
+vector<int> g[505];
+int used[505];
+stack<int> st;
+vector<int> cyclePath;
+
+bool dfs(int v, int a, int b) {
+    used[v] = 1;
+    for (int i = 0; i < g[v].size(); i++) {
+        int to = g[v][i];
+        if (v == a && b == to) continue;
+        if (!used[to]) {
+            if (dfs(to, a, b)) return true;
+        } else if (used[to] == 1) {
+            return true;
+        }
     }
-    return hashCode;
+    used[v] = 2;
+    return false;
+}
+
+bool dfs2(int v) {
+    used[v] = 1;
+    st.push(v);
+    for (int i = 0; i < g[v].size(); i++) {
+        int to = g[v][i];
+        if (!used[to]) {
+            if (dfs2(to)) return true;
+        } else if (used[to] == 1) {
+            while (st.top() != to) {
+                cyclePath.push_back(st.top());
+                st.pop();
+            }
+            cyclePath.push_back(to);
+            cyclePath.push_back(v);
+            reverse(cyclePath.begin(), cyclePath.end());
+            return true;
+        }
+    }
+    used[v] = 2;
+    if (!st.empty()) st.pop();
+    return false;
 }
 
 int main() {
-    string str;
-    cin >> str;
+    short n;
+    int m;
+    cin >> n >> m;
 
-    int size;
-    cin >> size;
+    for (int i = 1; i <= m; i++) {
+        int u, v;
+        cin >> u >> v;
+        g[u].push_back(v);
+    }
 
-    vector<int> cnt(size, 0);
+    bool cycle = false;
 
-    for (int i = 0; i < size; i++) {
-        int l, r;
-        cin >> l >> r;
-        int powNum=int(pow(P,(r-l)));
-        ll hashSearch = Hash(str, l - 1, r - 1);
-        ll hashStr = Hash(str, 0, r - l);
-
-        for (int j = 0; j < str.size() - (r - l); j++) {
-            if (hashStr == hashSearch) {
-                cnt[i]++;
-            }
-            hashStr = ((hashStr - (str[j] - 'a' + 1) * powNum) * P + (str[j + (r - l + 1)] - 'a' + 1)) % q;
-        }
-
-        if (cnt[i] == 0) {
-            cout << 1 << endl;
-        } else {
-            cout << cnt[i] << endl;
+    for (int i = 1; i <= n; i++) {
+        if (!used[i]) {
+            cycle = dfs2(i);
+            if (cycle) break;
         }
     }
 
-    return 0;
+    if (!cycle) {
+        cout << "YES" << endl;
+        return 0;
+    }
+
+    for (int i = 0; i < cyclePath.size() - 1; i++) {
+        int u = cyclePath[i];
+        int v = cyclePath[i + 1];
+        for (int j = 1; j <= n; j++) {
+            used[j] = 0;
+        }
+        cycle = 0;
+        for (int j = 1; j <= n; j++) {
+            if (!used[j]) {
+                cycle |= dfs(j, u, v);
+            }
+        }
+        if (!cycle) {
+            cout << "YES" << endl;
+            return 0;
+        }
+    }
+
+    cout << "NO" << endl;
 }

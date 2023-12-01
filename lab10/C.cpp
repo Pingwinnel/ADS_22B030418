@@ -1,67 +1,67 @@
-#include <iostream>
-#include <cmath>
-#define ll long long int
+#include <bits/stdc++.h>
 using namespace std;
-//run id:5001
+#define ll long long int
+//run id:2955
+struct Graph {
+    int V;
+    vector<int> adj;
+    Graph(int V){
+        this->V = V;
+        adj.resize(V+1);
+    };
+    void addEdge(int v, int w){
+        adj[v]=w;
 
-struct hashTable{
-    char tapes;
-    bool have=0;
+    };
+    void BFS(int a,int search){
+        stack<int> loli;
+        loli.push(a);
+        ll cnt=0;
+        ll now=a;
+        while (adj[now]!=search){
+            loli.push(adj[now]);
+            now=adj[now];
+            cnt++;
+        }
+        cout<<cnt+1<<endl;
+        for(int i=0;i<cnt+1;i++){
+            cout<<loli.top()<<" ";
+            loli.pop();
+        }
+    };
 };
-
-hashTable arr[100000];
-const ll P=31;
-
-size_t Hash(string str){
-
-    size_t hash_code=0;
-
-    for(ll i=0;i<str.size();i++){
-        hash_code=(hash_code*P+(str[i]));
-    }
-
-    return hash_code;
-
-}
-
-
+ 
 int main(){
-    ll size,j=0;
-    size_t hash_of_str,hash_of_searching;
-    string str,tape;
-    cin>>str;
-    ll pw = 1;
-    for(ll i=0;i<str.size();i++){
-        arr[i].tapes=str[i];
-    }
-    cin>>size;
-    for(ll i=0;i<size;i++){
-
-        cin>>tape;
-        pw = 1;
-        for(ll y = 1; y < tape.size(); y ++) {
-            pw *= P;
-        }
-        hash_of_str=Hash(str.substr(0,tape.size()));
-        hash_of_searching=Hash(tape);
-
-        for(ll j=0;j<=str.size()-tape.size();j++){
-
-            if(hash_of_searching==hash_of_str){
-                for(ll k=j;k<j+tape.size();k++){
-                    arr[k].have=1;
-                }
+    ll fir,sec;
+    cin>>fir>>sec;
+    ll counter=0;
+    list<ll> loli;
+    while(fir!=sec){
+        loli.push_front(sec);
+        if(sec%2==1){
+            counter++;
+            sec++;
+            if(fir==sec){
+                break;
             }
-            hash_of_str=((hash_of_str - (str[j] * pw )) * P+(str[j+tape.size()]));
+            loli.push_front(sec);
         }
-    }
-
-    for(ll i=0;i<str.size();i++){
-        if(arr[i].have==0){
-
-            cout<<"NO";
-            return 0;
+        if(fir>sec){
+            loli.pop_front();
+            while(fir!=sec){
+                loli.push_front(sec);
+                counter++;
+                sec++;
+            }
+            break;
         }
+        sec/=2;
+        counter++;
     }
-    cout<<"YES";
+    cout<<counter<<endl;
+    for(int i=0;i<counter;i++){
+        cout<<loli.front()<<" ";
+        loli.pop_front();
+    }
+    return 0;
 }
