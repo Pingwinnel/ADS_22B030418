@@ -1,68 +1,68 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define ll long long int
-#define ss short int
-//run id:
-ll V,E;
-ll infi=(int) 1e9;
+//run id:1890
 
-struct Graph {
-    int V;
-    vector<vector<ll>> adj;
-    Graph(int V){
-        this->V = V;
-        adj.resize(V + 1, vector<ll>(V + 1, -1));
-    };
-    void addEdge(int v, int w,int weight){
-        adj[v][w]=weight;
-    };
-    int minKey(int key[], bool mstSet[]){
-        int min = infi, min_index;
-    
-        for (int v = 0; v < V; v++)
-            if (mstSet[v] == false && key[v] < min)
-                min = key[v], min_index = v;
-    
-        return min_index;
-    };
-    void coutMST(int parent[]){
-        ll weight=0;
-        for (int i = 1; i < V; i++)
-            weight+=adj[i][parent[i]];
-        cout<<weight;
-    };
-    void primMST(){
-        int parent[V];
-        int key[V];
-        bool mstSet[V];
-        for (int i = 0; i < V; i++)
-            key[i] = infi, mstSet[i] = false;
-    
-        key[0] = 0;
-        parent[0] = -1;
-        for (int count = 0; count < V - 1; count++) {
-            int u = minKey(key, mstSet);
-            mstSet[u] = true;
-            for (int v = 0; v < V; v++)
-                if (adj[u][v]!=-1 && mstSet[v] == false && adj[u][v] < key[v])
-                    parent[v] = u, key[v] = adj[u][v];
-        }
-        coutMST(parent);
-    };
-};
- 
+const int MAX_N = 1e5 + 5;
+const int INF = 1e9;
 
-int main(){
-    ll v1,v2,weight;
-    cin>>V;
-    Graph graph(V);
-    for(ll i=0;i<V;i++){
-        for(ll j=0;j<V;j++){
-            cin>>weight;
-            graph.addEdge(i,j,weight);
+vector<pair<int, int> > graph[MAX_N];
+int minimal_ages[MAX_N];
+int n;
+set<pair<int, int> > way_roads;
+
+void dijkstra(int start){
+    for(int i = 1; i <= n; i++){
+        if(i == start)
+            minimal_ages[i] = 0;
+        else
+            minimal_ages[i] = INF;
+
+        way_roads.insert(make_pair(minimal_ages[i], i));
+    }
+
+    for(int i = 0 ; i < n; i++){
+        pair<int, int> p = *(way_roads.begin());
+        way_roads.erase(p);
+
+        int u = p.second;
+        int v = p.first;
+
+        if(v == INF) break;
+
+        for(int j = 0; j< graph[u].size(); j++){
+            p = graph[u][j];
+            int v = p.first, w = p.second;
+            if(minimal_ages[v] > w && minimal_ages[v] > minimal_ages[u]){
+                way_roads.erase(make_pair(minimal_ages[v], v));
+                minimal_ages[v] = max(minimal_ages[u], w);
+                way_roads.insert(make_pair(minimal_ages[v], v));
+            }
         }
     }
-    graph.primMST();
-    
+}
+
+int main(){
+    cin >> n;
+    pair<int, int> city_coord[n];
+
+    for(int i = 0; i < n ; i++){
+        int x, y;
+        cin >> x >> y;
+        city_coord[i] = make_pair(x, y);
+    }
+
+    for(int i = 0 ; i < n; i++){
+        for(int j = i+1; j < n; j++){
+            int w = abs(city_coord[i].first - city_coord[j].first) + abs(city_coord[i].second-city_coord[j].second);
+            graph[i+1].push_back(make_pair(j+1, w));
+            graph[j+1].push_back(make_pair(i+1, w));
+        }
+    }
+
+    dijkstra(1);
+
+    cout << minimal_ages[n];
+
+
     return 0;
 }

@@ -1,51 +1,59 @@
 #include <bits/stdc++.h>
+
 using namespace std;
-#define ll long long int
-#define ss short int
-//run id:
-ll V,E;
-ll infi=(int) 1e9;
+//run id:1876
 
-struct Graph {
-    int V;
-    vector<ll> adj;
-    vector<ll> ind;
-    Graph(int V){
-        this->V = V;
-        ind.resize(V+1);
+int INF = 1000000000;
 
-    };
-    void addEdge(int weight){
-        adj.push_back(weight);
-    };
-    ll parent(ll i){
-        if(ind[i]==i) return i;
-        return parent(ind[i]);
-    };
-    void unite(ll x,ll y){
-        ind[x]=y;
-    };
+vector<pair<int,int> > graph[200005];
+int n,m;
 
-    void Kruscal(){
-        sort(adj.begin(),adj.end());
-        ll weight=0;
-        for(ll i=1;i<adj.size();i++){
-            weight+=adj[0]+adj[i];
+int dijkstra(int start, int end){
+    vector<int> des(200005, INF);
+
+    des[start] = 0;
+    set< pair<int,int> > q;
+    q.insert(make_pair(des[start], start));
+    while(!q.empty()){
+        int v = (*(q.begin())).second;
+        q.erase(q.begin());
+        for(int j = 0; j<graph[v].size(); j++){
+            int u = graph[v][j].first;
+            int w = graph[v][j].second;
+
+            if(des[v] + w < des[u]){
+                q.erase(make_pair(des[u], u));
+                des[u] = des[v] + w;
+                q.insert(make_pair(des[u], u));
+            }
         }
-        cout<<weight;
-    };
-};
- 
+    }
+    return des[end];
+}
+
+
 
 int main(){
-    ll v1,v2,weight;
-    cin>>V;
-    Graph graph(V);
-    for(ll i=0;i<V;i++){
-        cin>>weight;
-        graph.addEdge(weight);
+    cin >> n >> m;
+    for (int i = 0; i < m; i++){
+        int a,b,c;
+        cin >> a >> b >> c;
+        graph[a].push_back(make_pair(b,c));
+        graph[b].push_back(make_pair(a,c));
     }
-    graph.Kruscal();
-    
+
+    int q,w,e,r;
+
+    cin >> q >> w >> e >> r;
+
+    int a,b;
+    a = dijkstra(q,w) + dijkstra(w,e) + dijkstra(e,r);
+    b = dijkstra(q,e) + dijkstra(e,w) + dijkstra(w,r) ;
+
+    if(min(a,b) <= INF){
+        cout << min(a,b);
+    }else{
+        cout << -1;
+    }
     return 0;
 }

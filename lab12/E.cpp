@@ -3,81 +3,79 @@
 using namespace std;
 //run id:
 
-class Graph{
-public:
-    vector <vector <int> > G;
-    vector <int> parent;
-    int V;
+vector<int>roadways[410];
+vector<int>airlanes[410];
+int cities[405][405];
 
-    Graph(int size){
-        V = size;
-        for(int i = 0; i < V; i++){
-            vector <int> t;
-            G.push_back(t);
-        }
-        fillParent();
-    }
 
-    void fillParent(){
-        for(int i = 0; i < V; i++){
-            parent.push_back(i);
-        }
-    }
-
-    void addEdge(int u, int v){
-        if(u < v){
-            G[u].push_back(v);
-        } else{
-            G[v].push_back(u);
-        }
-    }
-
-    int findParent(int v){
-        if(v == parent[v]){
-            return v;
-        }
-        return parent[v] = findParent(parent[v]);
-    }
-
-    bool unite(int x, int y){
-        int u = findParent(x);
-        int v = findParent(y);
-        if(u == v){
-            return false;
-        }
-        parent[u] = v;
-        return true;
-    }
+struct edge {
+    int u, v, w;
 };
 
-int main(){
+int n, m, v;
+vector<edge> e;
 
-    int n, m;
-    cin >> n >> m;
-    Graph * g = new Graph(n);
+const int INF = 100000;
+bool isCycle = false;
 
-    while(m--){
-        int u, v;
-        cin >> u >> v;
-        g->addEdge(--u, --v);
+void solve() {
+    vector<int> dest (n, INF);
+    dest[v] = 0;
+    vector<int> p (n, -1);
+    int x;
+
+    for (int i=0; i<n; i++) {
+        x = -1;
+        for (int j=0; j < n * n; j++)
+            if (dest[e[j].u] < INF)
+                if (dest[e[j].v] > dest[e[j].u] + e[j].w) {
+                    dest[e[j].v] = max (-INF, dest[e[j].u] + e[j].w);
+                    p[e[j].v] = e[j].u;
+                    x = e[j].v;
+                }
     }
 
-    int count = -1;
-    stack <int> answers;
-    for(int i = n - 1; i >= 0; i--){
-        count++;
-        answers.push(count);
-        for(int j = 0; j < g->G[i].size(); j++){
-            if(g->unite(i, g->G[i][j])){
-                count--;
-            }
+    if (x == -1)
+        isCycle = false;
+    else {
+        int y = x;
+        for (int i=0; i<n; ++i)
+            y = p[y];
+
+        vector<int> path;
+        for (int cur=y; ; cur=p[cur]) {
+            path.push_back (cur);
+            if (cur == y && path.size() > 1)  break;
+        }
+        reverse (path.begin(), path.end());
+
+        cout << "YES" << endl;
+        cout << path.size() << endl;
+        for (int i=0; i<path.size(); ++i)
+            cout << ++path[i] << ' ';
+        cout << endl;
+        isCycle = true;
+    }
+}
+
+int main(){
+    cin >> n;
+    vector<int> d(n, INF);
+    for (int i = 0; i < n; i ++){
+        for (int j = 0; j < n; j ++){
+            edge cur;
+            cin >> cur.w;
+            cur.u = i; cur.v = j;
+            e.push_back(cur);
         }
     }
 
-    while(!answers.empty()){
-        cout << answers.top() << endl;
-        answers.pop();
+    for (int i = 0; i < n; i ++){
+        v = i;
+        solve();
+        if (isCycle)
+            break;
     }
-
-    return 0;
+    if (!isCycle)
+        cout << "NO" << endl;
 }
